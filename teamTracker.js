@@ -31,6 +31,7 @@ function startApp() {
             "Add Roles",
             "View All Departments",
             "Add department",
+            "Exit"
         ]
     }).then(answer => {
         switch (answer.request) {
@@ -61,13 +62,23 @@ function startApp() {
             case "Add department":
                 addDepartment();
                 break;
+            case "Exit":
+                connection.end();
         };
     });
 };
 
 // view all employees
 function allEmployess() {
-    console.log("Viewing Employess!!!");
+    // define query
+    const query = "SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.name FROM employees INNER JOIN roles ON (employees.role_id = roles.id) INNER JOIN departments ON (roles.depart_id = departments.id)"
+
+    // run query in mysql
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+
+        console.table(res);
+    });
 
     // query user again
     startApp();
@@ -75,8 +86,6 @@ function allEmployess() {
 
 // add an employee
 function addEmployee() {
-    console.log("Adding Employee...");
-
     // query user again
     startApp();
 };
@@ -91,7 +100,15 @@ function updateEmpRole() {
 
 // view all roles
 function allRoles() {
-    console.log("Viewing Roles!!!");
+    // define query
+    const query = "SELECT * FROM roles"
+
+    // run query in mysql
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+
+        console.table(res);
+    });
 
     // query user again
     startApp();
@@ -107,7 +124,15 @@ function addRole() {
 
 // view all departments
 function allDepartments() {
-    console.log("Viewing All Departments!!!");
+    // define query
+    const query = "SELECT * FROM departments"
+
+    // run query in mysql
+    connection.query(query, (err, res) => {
+        if (err) throw err;
+
+        console.table(res);
+    });
 
     // query user again
     startApp();
