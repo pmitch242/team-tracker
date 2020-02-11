@@ -86,8 +86,66 @@ function allEmployess() {
 
 // add an employee
 function addEmployee() {
-    // query user again
-    startApp();
+
+    // grab roles
+    connection.query("SELECT * FROM roles", (err, res) => {
+        if (err) throw err;
+        const rolesListRaw = res;
+        const rolesList = [];
+
+        rolesListRaw.forEach(role => {
+            rolesList.push(role.title);
+        })
+
+        inquirer.prompt([
+            {
+                name: "firstName",
+                type: "input",
+                message: "What is the empployee's first name?"
+            },
+            {
+                name: "lastName",
+                type: "input",
+                message: "What is the employee's last name?"
+            },
+            {
+                name: "role",
+                type: "list",
+                message: "What is the employee's role?",
+                choices: rolesList
+            }
+        ])
+
+            .then((answers) => {
+                let roleID;
+                const firstNameNew = answers.firstName;
+                const lastNameNew = answers.lastName;
+
+                // 
+                for (let i=0; i < rolesListRaw.length; i++) {
+                    if (answers.role === rolesListRaw[i].title) {
+                        roleID = rolesListRaw[i].id;
+                    }
+                }
+
+                // query to add user inputs into employees table
+                let query = "INSERT INTO employees SET ?";
+
+                connection.query(query, {
+                    first_name: firstNameNew,
+                    last_name: lastNameNew,
+                    role_id: roleID
+                }, (err, res) => {
+                    if (err) throw err;
+
+                    // console.table(res);
+                    console.log("Adding employee...")
+
+                    startApp();
+                });
+            })
+
+    })
 };
 
 // update the role of employee
