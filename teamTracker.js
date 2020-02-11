@@ -122,7 +122,7 @@ function addEmployee() {
                 const lastNameNew = answers.lastName;
 
                 // 
-                for (let i=0; i < rolesListRaw.length; i++) {
+                for (let i = 0; i < rolesListRaw.length; i++) {
                     if (answers.role === rolesListRaw[i].title) {
                         roleID = rolesListRaw[i].id;
                     }
@@ -144,7 +144,6 @@ function addEmployee() {
                     startApp();
                 });
             })
-
     })
 };
 
@@ -174,10 +173,63 @@ function allRoles() {
 
 // add a role
 function addRole() {
-    console.log("Adding Role...");
+    // grab exisiting departments
+    connection.query("SELECT * FROM departments", (err, res) => {
+        if (err) throw err;
+        const departmentsListRaw = res;
+        const departmentsList = [];
 
-    // query user again
-    startApp();
+        departmentsListRaw.forEach(department => {
+            departmentsList.push(department.name);
+        })
+
+        inquirer.prompt([
+            {
+                name: "role",
+                type: "input",
+                message: "What is the role you would like to add?"
+            },
+            {
+                name: "salary",
+                type: "input",
+                message: "What is the salary for this role?"
+            },
+            {
+                name: "department",
+                type: "list",
+                message: "What department does this role belong to?",
+                choices: departmentsList
+            }
+        ])
+
+            .then((answers) => {
+                let departmentID;
+                const roleNew = answers.role;
+                const salaryNew = answers.salary;
+
+                // loop through list of departments
+                for (let i = 0; i < departmentsListRaw.length; i++) {
+                    if (answers.department === departmentsListRaw[i].name) {
+                        departmentID = departmentsListRaw[i].id;
+                    }
+                }
+
+                // query to add user inputs into employees table
+                let query = "INSERT INTO roles SET ?";
+
+                connection.query(query, {
+                    title: roleNew,
+                    salary: salaryNew,
+                    depart_id: departmentID
+                }, (err, res) => {
+                    if (err) throw err;
+
+                    console.log("Role added.")
+
+                    startApp();
+                });
+            })
+    })
 };
 
 // view all departments
@@ -198,8 +250,26 @@ function allDepartments() {
 
 // add a department
 function addDepartment() {
-    console.log("Adding Department...");
+    inquirer.prompt([
+        {
+            name: "department",
+            type: "input",
+            message: "What is the department you would like to add?"
+        }
+    ])
 
-    // query user again
-    startApp();
+        .then((answers) => {
+            // query to add user inputs into employees table
+            let query = "INSERT INTO departments SET ?";
+
+            connection.query(query, {
+                name: answers.department
+            }, (err, res) => {
+                if (err) throw err;
+
+                console.log("Department added.")
+
+                startApp();
+            });
+        });
 };
