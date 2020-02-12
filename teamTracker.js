@@ -14,6 +14,7 @@ const connection = mysql.createConnection({
 // establish connection with database
 connection.connect(err => {
     if (err) throw err;
+
     startApp();
 });
 
@@ -62,6 +63,7 @@ function startApp() {
             case "Add department":
                 addDepartment();
                 break;
+
             case "Exit":
                 connection.end();
         };
@@ -77,11 +79,20 @@ function allEmployess() {
     connection.query(query, (err, res) => {
         if (err) throw err;
 
-        console.table(res);
-    });
+        if (!res.length) {
+            console.log("\n=========================================");
+            console.log("Please add an employee first.")
+            console.log("=========================================\n");
+            return startApp();
+        }
 
-    // query user again
-    startApp();
+        console.log("\n=========================================");
+        console.table(res);
+        console.log("=========================================\n");
+
+        // query user again
+        startApp();
+    });
 };
 
 // add an employee
@@ -90,6 +101,13 @@ function addEmployee() {
     // grab roles
     connection.query("SELECT * FROM roles", (err, res) => {
         if (err) throw err;
+
+        if (!res.length) {
+            console.log("\n=========================================");
+            console.log("Please add a role first.")
+            console.log("=========================================\n");
+            return startApp();
+        }
         const rolesListRaw = res;
         const rolesList = [];
 
@@ -138,9 +156,11 @@ function addEmployee() {
                 }, (err, res) => {
                     if (err) throw err;
 
-                    // console.table(res);
-                    console.log("Adding employee...")
+                    console.log("\n=========================================");
+                    console.log("Adding employee...");
+                    console.log("=========================================\n");
 
+                    // query user again
                     startApp();
                 });
             })
@@ -158,6 +178,13 @@ function updateEmpRole() {
     // query for all employees
     connection.query("SELECT * FROM employees", (err, res) => {
         if (err) throw err;
+
+        if (!res.length) {
+            console.log("\n=========================================");
+            console.log("You have no employees to update.")
+            console.log("=========================================\n");
+            return startApp();
+        }
 
         // store results into a varible
         employeesListRaw = res;
@@ -223,7 +250,9 @@ function updateEmpRole() {
                 connection.query(query, (err, res) => {
                     if (err) throw err;
 
-                    console.log("Role updated.")
+                    console.log("\n=========================================");
+                    console.log("Role updated.");
+                    console.log("=========================================\n");
 
                     // query user again
                     startApp();
@@ -242,11 +271,20 @@ function allRoles() {
     connection.query(query, (err, res) => {
         if (err) throw err;
 
-        console.table(res);
-    });
+        if (!res.length) {
+            console.log("\n=========================================");
+            console.log("Please add a role first.")
+            console.log("=========================================\n");
+            return startApp();
+        }
 
-    // query user again
-    startApp();
+        console.log("\n=========================================");
+        console.table(res);
+        console.log("=========================================\n");
+
+        // query user again
+        startApp();
+    });
 };
 
 // add a role
@@ -254,6 +292,13 @@ function addRole() {
     // grab exisiting departments
     connection.query("SELECT * FROM departments", (err, res) => {
         if (err) throw err;
+
+        if (!res.length) {
+            console.log("\n=========================================");
+            console.log("Please add a department first.")
+            console.log("=========================================\n");
+            return startApp();
+        }
         const departmentsListRaw = res;
         const departmentsList = [];
 
@@ -302,7 +347,9 @@ function addRole() {
                 }, (err, res) => {
                     if (err) throw err;
 
+                    console.log("\n=========================================");
                     console.log("Role added.")
+                    console.log("=========================================\n");
 
                     startApp();
                 });
@@ -319,11 +366,20 @@ function allDepartments() {
     connection.query(query, (err, res) => {
         if (err) throw err;
 
-        console.table(res);
-    });
+        if (!res.length) {
+            console.log("\n=========================================");
+            console.log("Please add a department first.")
+            console.log("=========================================\n");
+            return startApp();
+        }
 
-    // query user again
-    startApp();
+        console.log("\n=========================================");
+        console.table(res);
+        console.log("=========================================\n");
+
+        // query user again
+        startApp();
+    });
 };
 
 // add a department
@@ -336,16 +392,17 @@ function addDepartment() {
         }
     ])
 
-        .then((answers) => {
+        .then((answer) => {
             // query to add user inputs into employees table
             let query = "INSERT INTO departments SET ?";
 
             connection.query(query, {
-                name: answers.department
+                name: answer.department
             }, (err, res) => {
                 if (err) throw err;
-
+                console.log("\n=========================================");
                 console.log("Department added.")
+                console.log("=========================================\n");
 
                 startApp();
             });
