@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 
@@ -149,10 +149,88 @@ function addEmployee() {
 
 // update the role of employee
 function updateEmpRole() {
-    console.log("Updating employee roles...");
+    // Varibles
+    let employeesListRaw = "";
+    let rolesListRaw = "";
+    const employeesList = [];
+    const rolesList = [];
 
-    // query user again
-    startApp();
+    // query for all employees
+    connection.query("SELECT * FROM employees", (err, res) => {
+        if (err) throw err;
+
+        // store results into a varible
+        employeesListRaw = res;
+
+        // loop through the list of employees
+        employeesListRaw.forEach(employee => {
+
+            // push employee's first and last name into an array
+            employeesList.push(employee.first_name + " " + employee.last_name);
+        })
+
+        // query for list of roles
+        connection.query("SELECT * FROM roles", (err, res) => {
+            if (err) throw err;
+
+            // store results into varible
+            rolesListRaw = res;
+
+            // loop through list of roles
+            rolesListRaw.forEach(role => {
+
+                // push role titles into an array
+                rolesList.push(role.title);
+            })
+
+            // prompt user
+            inquirer.prompt([
+                {
+                    name: "employee",
+                    type: "list",
+                    message: "Which employee would you like to update?",
+                    choices: employeesList
+                },
+                {
+                    name: "role",
+                    type: "list",
+                    message: "What is the new role of this employee?",
+                    choices: rolesList
+                }
+            ]).then(answers => {
+                let employeeID;
+                let roleID;
+                const role = answers.role;
+                const employee = answers.employee;
+
+                // loop through list of employees to find whih employee to update
+                for (let i = 0; i < employeesListRaw.length; i++) {
+                    if (employee === (employeesListRaw[i].first_name + " " + employeesListRaw[i].last_name)) {
+                        employeeID = employeesListRaw[i].id;
+                    }
+                }
+
+                // loop through list of roles to find which role to use
+                for (let i = 0; i < rolesListRaw.length; i++) {
+                    if (role === rolesListRaw[i].title) {
+                        roleID = rolesListRaw[i].id;
+                    }
+                }
+
+                // query to update employee's role
+                let query = `UPDATE employees SET role_id = ${roleID} WHERE id = ${employeeID}`;
+
+                connection.query(query, (err, res) => {
+                    if (err) throw err;
+
+                    console.log("Role updated.")
+
+                    // query user again
+                    startApp();
+                });
+            })
+        })
+    })
 };
 
 // view all roles
