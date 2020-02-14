@@ -2,7 +2,7 @@
   "name": "team-tracker",
   "version": "1.0.0",
   "description": "CLI Employee Tracker",
-  "main": "start.js",
+  "main": "server.js",
   "dependencies": {
     "console.table": "^0.10.0",
     "dotenv": "^8.2.0",
