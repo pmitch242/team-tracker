@@ -11,9 +11,3 @@ INSERT INTO employees(first_name, last_name, role_id)
     ('Phill', 'Mitchell-Matsuyama', 3),
     ('Starfish', 'Turgeon', 2),
     ('Jay','Elkino', 3);
-   
-   
-SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.name FROM employees INNER JOIN roles ON (employees.role_id = roles.id) INNER JOIN departments ON (roles.depart_id = departments.id);
-SELECT * FROM roles; 
-SELECT * FROM employees;
-SELECT * FROM departments;
