@@ -1,6 +1,6 @@
 # Team Tracker
 
-Team Tracker is a simple commandline application that for managing a company's employees using node, inquirer, and MySQL.
+Team Tracker is a simple command-line application that for managing a company's employees using node, inquirer, and MySQL.
 
 ## Functionality 
 The user can: 
