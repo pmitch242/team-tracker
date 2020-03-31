@@ -9,7 +9,10 @@ The user can:
 * Update employee roles
 
 ## Usage
-
+Instal dependencies withe the following command:
+```
+$ npm i
+```
 The application will be invoked with the following command:
 ```
 $ node index.js
