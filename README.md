@@ -9,7 +9,7 @@ The user can:
 * Update employee roles
 
 ## Usage
-Instal dependencies withe the following command:
+Install dependencies with the following command:
 ```
 $ npm i
 ```
